@@ -1,0 +1,14 @@
+# 构建产物
+.build/
+android/build/
+android/app/assets/
+*.idsig
+
+# 编辑器
+.idea/
+*.iml
+.vscode/
+
+# 系统
+.DS_Store
+Thumbs.db

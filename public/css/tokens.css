@@ -1,0 +1,175 @@
+/* ============================================================
+   潮汐 TIDE · Design Tokens
+   Material Design 3 Expressive — 动态色彩 / 表达性字阶 / 形状与动效
+   ============================================================ */
+
+@property --h {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 342;
+}
+@property --c {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.15;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* 动态色相（JS 会随封面更新） */
+  --h: 342;
+  --c: 0.15;
+  --h2: calc(var(--h) + 22);
+  --h3: calc(var(--h) - 52);
+
+  transition: --h 0.9s cubic-bezier(0.2, 0, 0, 1), --c 0.9s cubic-bezier(0.2, 0, 0, 1);
+
+  /* ---------- 色彩角色 · Dark ---------- */
+  --surface: oklch(0.152 0.012 var(--h));
+  --surface-dim: oklch(0.118 0.012 var(--h));
+  --surface-bright: oklch(0.31 0.018 var(--h));
+  --surface-container-lowest: oklch(0.112 0.012 var(--h));
+  --surface-container-low: oklch(0.196 0.014 var(--h));
+  --surface-container: oklch(0.226 0.016 var(--h));
+  --surface-container-high: oklch(0.262 0.018 var(--h));
+  --surface-container-highest: oklch(0.302 0.02 var(--h));
+
+  --on-surface: oklch(0.955 0.008 var(--h));
+  --on-surface-variant: oklch(0.775 0.022 var(--h));
+  --on-surface-faint: oklch(0.62 0.02 var(--h));
+
+  --outline: oklch(0.585 0.026 var(--h));
+  --outline-variant: oklch(0.335 0.022 var(--h));
+
+  --primary: oklch(0.842 var(--c) var(--h));
+  --on-primary: oklch(0.196 0.052 var(--h));
+  --primary-container: oklch(0.372 calc(var(--c) * 0.92) var(--h));
+  --on-primary-container: oklch(0.936 calc(var(--c) * 0.34) var(--h));
+  --primary-dim: oklch(0.7 calc(var(--c) * 0.9) var(--h));
+
+  --secondary: oklch(0.82 calc(var(--c) * 0.52) var(--h2));
+  --on-secondary: oklch(0.2 0.03 var(--h2));
+  --secondary-container: oklch(0.336 calc(var(--c) * 0.6) var(--h2));
+  --on-secondary-container: oklch(0.93 calc(var(--c) * 0.3) var(--h2));
+
+  --tertiary: oklch(0.855 calc(var(--c) * 0.72) var(--h3));
+  --on-tertiary: oklch(0.2 0.04 var(--h3));
+  --tertiary-container: oklch(0.36 calc(var(--c) * 0.7) var(--h3));
+
+  --error: oklch(0.76 0.15 25);
+  --on-error: oklch(0.2 0.05 25);
+  --error-container: oklch(0.36 0.12 25);
+
+  --scrim: oklch(0.08 0.01 var(--h) / 0.72);
+
+  /* 语义化渐变 */
+  --grad-hero: linear-gradient(
+    118deg,
+    oklch(0.36 calc(var(--c) * 0.9) var(--h) / 0.9) 0%,
+    oklch(0.3 calc(var(--c) * 0.55) var(--h2) / 0.7) 45%,
+    oklch(0.18 0.02 var(--h) / 0) 100%
+  );
+  --grad-primary: linear-gradient(135deg,
+    oklch(0.86 var(--c) var(--h)) 0%,
+    oklch(0.78 calc(var(--c) * 0.85) var(--h2)) 100%);
+
+  /* ---------- 字阶 ---------- */
+  --font: "Segoe UI Variable Display", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "HarmonyOS Sans SC", "Source Han Sans SC", "Microsoft YaHei UI",
+    "Microsoft YaHei", system-ui, sans-serif;
+  --font-num: "Segoe UI Variable Display", "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+
+  --fs-display: clamp(2.6rem, 4.2vw, 4rem);
+  --fs-headline: clamp(1.7rem, 2.4vw, 2.3rem);
+  --fs-title-l: 1.375rem;
+  --fs-title: 1.0625rem;
+  --fs-body: 0.9375rem;
+  --fs-label: 0.8125rem;
+  --fs-caption: 0.75rem;
+
+  /* ---------- 形状 ---------- */
+  --r-xs: 8px;
+  --r-s: 12px;
+  --r-m: 18px;
+  --r-l: 24px;
+  --r-xl: 30px;
+  --r-2xl: 40px;
+  --r-full: 999px;
+
+  /* ---------- 高度 ---------- */
+  --el-1: 0 1px 2px oklch(0.1 0.02 var(--h) / 0.42), 0 1px 3px 1px oklch(0.1 0.02 var(--h) / 0.22);
+  --el-2: 0 2px 6px 2px oklch(0.1 0.02 var(--h) / 0.22), 0 1px 2px oklch(0.1 0.02 var(--h) / 0.32);
+  --el-3: 0 6px 16px 4px oklch(0.09 0.03 var(--h) / 0.28), 0 2px 6px oklch(0.09 0.03 var(--h) / 0.3);
+  --el-4: 0 16px 40px 8px oklch(0.08 0.04 var(--h) / 0.36), 0 4px 12px oklch(0.08 0.04 var(--h) / 0.3);
+  --el-art: 0 18px 48px -12px oklch(0.06 0.05 var(--h) / 0.72), 0 4px 14px oklch(0.06 0.05 var(--h) / 0.4);
+
+  /* ---------- 动效 ---------- */
+  --spring: cubic-bezier(0.2, 1.28, 0.36, 1);
+  --emph: cubic-bezier(0.2, 0, 0, 1);
+  --emph-out: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --d-short: 160ms;
+  --d-med: 280ms;
+  --d-long: 480ms;
+  --d-xl: 720ms;
+
+  /* 布局 */
+  --rail: 248px;
+  --player-h: 84px;
+  --topbar-h: 68px;
+}
+
+/* ============ Light ============ */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --surface: oklch(0.988 0.004 var(--h));
+  --surface-dim: oklch(0.955 0.006 var(--h));
+  --surface-bright: oklch(1 0 0);
+  --surface-container-lowest: oklch(1 0 0);
+  --surface-container-low: oklch(0.968 0.008 var(--h));
+  --surface-container: oklch(0.946 0.012 var(--h));
+  --surface-container-high: oklch(0.922 0.016 var(--h));
+  --surface-container-highest: oklch(0.898 0.02 var(--h));
+
+  --on-surface: oklch(0.21 0.018 var(--h));
+  --on-surface-variant: oklch(0.44 0.024 var(--h));
+  --on-surface-faint: oklch(0.58 0.02 var(--h));
+
+  --outline: oklch(0.62 0.02 var(--h));
+  --outline-variant: oklch(0.885 0.014 var(--h));
+
+  --primary: oklch(0.47 calc(var(--c) * 1.08) var(--h));
+  --on-primary: oklch(0.995 0.005 var(--h));
+  --primary-container: oklch(0.905 calc(var(--c) * 0.32) var(--h));
+  --on-primary-container: oklch(0.3 calc(var(--c) * 0.9) var(--h));
+  --primary-dim: oklch(0.56 calc(var(--c) * 1.05) var(--h));
+
+  --secondary: oklch(0.48 calc(var(--c) * 0.62) var(--h2));
+  --on-secondary: oklch(1 0 0);
+  --secondary-container: oklch(0.918 calc(var(--c) * 0.26) var(--h2));
+  --on-secondary-container: oklch(0.31 calc(var(--c) * 0.6) var(--h2));
+
+  --tertiary: oklch(0.5 calc(var(--c) * 0.8) var(--h3));
+  --on-tertiary: oklch(1 0 0);
+  --tertiary-container: oklch(0.92 calc(var(--c) * 0.28) var(--h3));
+
+  --error: oklch(0.52 0.18 25);
+  --on-error: oklch(1 0 0);
+  --error-container: oklch(0.92 0.06 25);
+
+  --scrim: oklch(0.2 0.02 var(--h) / 0.42);
+
+  --grad-hero: linear-gradient(
+    118deg,
+    oklch(0.86 calc(var(--c) * 0.55) var(--h) / 0.95) 0%,
+    oklch(0.9 calc(var(--c) * 0.35) var(--h2) / 0.8) 48%,
+    oklch(0.98 0.01 var(--h) / 0) 100%
+  );
+
+  --el-1: 0 1px 2px oklch(0.4 0.03 var(--h) / 0.1), 0 1px 3px 1px oklch(0.4 0.03 var(--h) / 0.06);
+  --el-2: 0 2px 6px 2px oklch(0.4 0.03 var(--h) / 0.08), 0 1px 2px oklch(0.4 0.03 var(--h) / 0.1);
+  --el-3: 0 6px 18px 2px oklch(0.4 0.04 var(--h) / 0.12), 0 2px 6px oklch(0.4 0.04 var(--h) / 0.08);
+  --el-4: 0 20px 48px 6px oklch(0.4 0.05 var(--h) / 0.16), 0 6px 14px oklch(0.4 0.05 var(--h) / 0.1);
+  --el-art: 0 18px 42px -14px oklch(0.35 0.08 var(--h) / 0.38), 0 4px 12px oklch(0.35 0.08 var(--h) / 0.16);
+}
