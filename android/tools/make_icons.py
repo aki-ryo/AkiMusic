@@ -116,6 +116,21 @@ def make(size):
     return base
 
 
+def make_full_bleed(size):
+    """满幅版本：渐变 + 音符，不做超椭圆裁切，供 iOS 使用。"""
+    base = gradient(size, (255, 110, 122), (162, 10, 38), diag=0.26).convert("RGBA")
+    glow = Image.new("L", (size, size), 0)
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse([-size * 0.40, -size * 0.60, size * 0.86, size * 0.58], fill=46)
+    glow = glow.filter(ImageFilter.GaussianBlur(size * 0.16))
+    white = Image.new("RGBA", (size, size), (255, 255, 255, 255))
+    base = Image.composite(white, base, glow)
+    note = Image.new("RGBA", (size * SS, size * SS), (0, 0, 0, 0))
+    draw_note(note, size)
+    note = note.resize((size, size), Image.LANCZOS)
+    return Image.alpha_composite(base, note)
+
+
 def main():
     icon = make(1024)
 
@@ -136,8 +151,10 @@ def main():
 
     ios_dir = os.path.join(ROOT, "ios", "AkiMusic", "Resources", "Assets.xcassets", "AppIcon.appiconset")
     if os.path.isdir(ios_dir):
-        icon.save(os.path.join(ios_dir, "AppIcon-1024.png"))
-        print("· iOS AppIcon-1024.png")
+        # iOS 会自己裁圆角，图标必须是满幅、无 alpha 的 RGB
+        full = make_full_bleed(1024).convert("RGB")
+        full.save(os.path.join(ios_dir, "AppIcon-1024.png"))
+        print("· iOS AppIcon-1024.png（满幅）")
     print("完成")
 
 

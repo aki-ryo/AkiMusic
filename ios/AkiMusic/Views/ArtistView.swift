@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct ArtistView: View {
 
@@ -161,9 +162,9 @@ struct ArtistView: View {
         let albumsTask = Task { try? await NetEaseAPI.shared.searchAlbums(keyword: artistName, limit: 20) }
         let infoTask = Task { try? await NetEaseAPI.shared.searchArtists(keyword: artistName, limit: 10) }
 
-        let loadedSongs = await songsTask.value ?? []
-        let loadedAlbums = await albumsTask.value ?? []
-        let loadedArtists = await infoTask.value ?? []
+        let loadedSongs = (await songsTask.value) ?? []
+        let loadedAlbums = (await albumsTask.value) ?? []
+        let loadedArtists = (await infoTask.value) ?? []
 
         songs = loadedSongs
         albums = loadedAlbums

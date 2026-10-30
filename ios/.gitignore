@@ -1,0 +1,14 @@
+# XcodeGen 生成物，不要提交
+AkiMusic.xcodeproj/
+AkiMusic/Info.plist
+
+# 构建产物
+build/
+DerivedData/
+Payload/
+*.ipa
+*.xcarchive
+*.log
+
+# macOS
+.DS_Store

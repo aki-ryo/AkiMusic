@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 /// 悬浮在标签栏上方的迷你播放条。
 struct MiniPlayer: View {

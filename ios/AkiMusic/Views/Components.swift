@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 // MARK: - 滚动方向 / 收缩
 

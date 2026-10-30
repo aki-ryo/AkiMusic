@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 enum SearchScope: String, CaseIterable, Identifiable {
 
@@ -280,10 +281,10 @@ struct SearchView: View {
         let albumsTask = Task { try? await NetEaseAPI.shared.searchAlbums(keyword: keyword, limit: 30) }
         let artistsTask = Task { try? await NetEaseAPI.shared.searchArtists(keyword: keyword, limit: 20) }
 
-        let loadedSongs = await songsTask.value ?? []
-        let loadedPlaylists = await playlistsTask.value ?? []
-        let loadedAlbums = await albumsTask.value ?? []
-        let loadedArtists = await artistsTask.value ?? []
+        let loadedSongs = (await songsTask.value) ?? []
+        let loadedPlaylists = (await playlistsTask.value) ?? []
+        let loadedAlbums = (await albumsTask.value) ?? []
+        let loadedArtists = (await artistsTask.value) ?? []
 
         if Task.isCancelled { return }
 
