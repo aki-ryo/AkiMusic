@@ -692,12 +692,47 @@ function bindControls() {
   on("#addPlaylist", "click", openAddPlaylist);
   on("#menuBtn", "click", () => $("#sidebar").classList.toggle("is-open"));
 
+  // 滚动：顶栏吸附 + 标签栏收缩/展开（iOS 26 起的行为，iOS 27 更顺）
+  const topbarEl = $(".topbar");
+  const tabbarEl = $("#tabbar");
+  let lastY = 0;
+  scrollEl.addEventListener(
+    "scroll",
+    () => {
+      const y = scrollEl.scrollTop;
+      topbarEl.classList.toggle("is-stuck", y > 24);
+      if (tabbarEl) {
+        if (y > lastY + 8 && y > 64) tabbarEl.classList.add("is-compact");
+        else if (y < lastY - 8) tabbarEl.classList.remove("is-compact");
+      }
+      lastY = y;
+    },
+    { passive: true }
+  );
+
+  // 液态玻璃透明度（iOS 27 设置里的那个滑块）
+  const clarity = $("#clarity");
+  if (clarity) {
+    const saved = Number(Store.get("clarity") ?? 72);
+    const apply = (v) => {
+      document.documentElement.style.setProperty("--glass-clarity", String(v / 100));
+      clarity.style.setProperty("--clarity-pct", v + "%");
+    };
+    clarity.value = String(saved);
+    apply(saved);
+    clarity.addEventListener("input", () => {
+      const v = Number(clarity.value);
+      apply(v);
+      Store.set("clarity", v);
+    });
+  }
+
   on("#themeBtn", "click", () => {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
     Store.set("theme", next);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", next === "dark" ? "#141018" : "#fff9fb");
+    if (meta) meta.setAttribute("content", next === "dark" ? "#000000" : "#f2f2f7");
     $("#themeBtn").innerHTML = icon(next === "dark" ? "sun" : "moon");
   });
 
@@ -724,7 +759,7 @@ function bindControls() {
 
   // 侧边栏点击后移动端收起
   $("#sidebar").addEventListener("click", (e) => {
-    if (e.target.closest("[data-route]") && window.innerWidth <= 760) {
+    if (e.target.closest("[data-route]") && window.innerWidth <= 900) {
       $("#sidebar").classList.remove("is-open");
     }
   });

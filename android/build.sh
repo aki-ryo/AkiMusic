@@ -13,7 +13,7 @@ ANDROID_DIR="$ROOT/android"
 BUILD="$ANDROID_DIR/build"
 OUT="$ROOT/dist"
 
-VERSION_NAME="0.1.0-beta"
+VERSION_NAME="0.1.1-beta"
 VERSION_CODE="1"
 
 SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/AppData/Local/Android/Sdk}}"

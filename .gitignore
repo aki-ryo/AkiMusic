@@ -12,3 +12,7 @@ android/app/assets/
 # 系统
 .DS_Store
 Thumbs.db
+
+# iOS
+ios/build/
+ios/*.xcodeproj/
