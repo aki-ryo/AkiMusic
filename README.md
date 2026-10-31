@@ -2,10 +2,10 @@
 
 一个 **iOS 27 Liquid Glass** 风格的音乐播放器，信息架构照着 Apple Music 来，数据与在线播放走 **网易云音乐** 接口。
 
-同一套前端跑在浏览器与 Android 上，另有独立的 SwiftUI 原生 iOS 版。
+三个客户端：浏览器版（同一套前端）、**Jetpack Compose 原生 Android**、**SwiftUI 原生 iOS**。
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-0.1.1--beta-fa2d48" />
+  <img alt="version" src="https://img.shields.io/badge/version-0.1.2--beta-fa2d48" />
   <img alt="android" src="https://img.shields.io/badge/Android-8.0%2B-7c7aff" />
   <img alt="ios" src="https://img.shields.io/badge/iOS-16.0%2B-8e8e93" />
   <img alt="use" src="https://img.shields.io/badge/for-learning%20only-lightgrey" />
@@ -59,7 +59,7 @@ iOS 26 引入、iOS 27 强化的材质。这一版把原来的 Material 3 Expres
 
 **桌面 / 浏览器**：侧栏 → 顶栏搜索 → Hero 轮播 + 横向书架 → 悬浮播放条 → 全屏正在播放。
 
-**Android**：`android/` 是一个 100 KB 的 WebView 壳，内置本地 HTTP 服务（把 `server.py` 的能力用 Java 重写），前端资源全部打进 APK，**装完就能播，不需要连电脑**。
+**Android**：`android-native/` 是 **Jetpack Compose 原生应用**（非 WebView）。数据层直连网易云接口（Android 无 CORS 限制），`MediaPlayer` 播放，Compose 自绘液态玻璃材质，全局使用 Inter 字体。构建：`gradle :app:assembleRelease`。
 
 **iOS**：`ios/` 是独立的 **SwiftUI 原生工程**，不是 WebView。用 XcodeGen 生成工程文件，玻璃材质由自定义 `ViewModifier` 合成（`.ultraThinMaterial` + 双层描边 + 高光），窗口控件、标签栏、播放器、歌词全部原生。
 
@@ -118,7 +118,10 @@ open AkiMusic.xcodeproj
 │     ├─ theme.js          OKLab 取色引擎
 │     ├─ store.js          localStorage 状态
 │     └─ util.js           工具函数
-├─ android/                WebView 壳（Java）+ 构建脚本 + 图标生成
+├─ android-native/         Jetpack Compose 原生 Android 工程（Kotlin）
+│  └─ app/src/main/java/com/akiryo/akimusic/
+│     ├─ data/             数据模型、网易云接口、播放引擎、资料库
+│     └─ ui/               主题（Inter 字体）、玻璃材质、页面、底栏、播放页
 ├─ ios/                    SwiftUI 原生工程（XcodeGen）
 ├─ dist/                   签名好的 APK
 └─ docs/                   截图

@@ -1,0 +1,5 @@
+# 本地构建产物
+.gradle/
+build/
+local.properties
+keystore.properties
