@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.isSystemInDarkTheme
+import com.akiryo.akimusic.data.Auth
 import com.akiryo.akimusic.data.Library
 import com.akiryo.akimusic.ui.AkiApp
 import com.akiryo.akimusic.ui.AkiTheme
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         Library.init(applicationContext)
+        Auth.init(applicationContext)
         setContent {
             val systemDark = isSystemInDarkTheme()
             var dark by remember { mutableStateOf(systemDark) }

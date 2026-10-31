@@ -23,7 +23,8 @@ import com.akiryo.akimusic.data.Song
 private sealed interface Overlay {
     data object Player : Overlay
     data object Lyrics : Overlay
-    data object Profile : Overlay
+    data object Settings : Overlay
+    data object Login : Overlay
     data class PlaylistDetail(val id: Long) : Overlay
 }
 
@@ -60,7 +61,7 @@ fun AkiApp(dark: Boolean, onToggleDark: () -> Unit) {
                             PlayerHub.playAll(list, index)
                             overlay = Overlay.Player
                         },
-                        onProfile = { overlay = Overlay.Profile },
+                        onProfile = { overlay = Overlay.Settings },
                         onOpenChart = { overlay = Overlay.PlaylistDetail(it) },
                         onOpenPlaylist = { overlay = Overlay.PlaylistDetail(it) },
                     )
@@ -71,13 +72,6 @@ fun AkiApp(dark: Boolean, onToggleDark: () -> Unit) {
                             overlay = Overlay.Player
                         },
                         onOpenPlaylist = { overlay = Overlay.PlaylistDetail(it) },
-                        onOpenChart = { overlay = Overlay.PlaylistDetail(it) },
-                    )
-                    Tab.Radio -> RadioScreen(
-                        onOpenList = { list, index ->
-                            PlayerHub.playAll(list, index)
-                            overlay = Overlay.Player
-                        },
                         onOpenChart = { overlay = Overlay.PlaylistDetail(it) },
                     )
                     Tab.Library -> LibraryScreen { list, index ->
@@ -98,10 +92,15 @@ fun AkiApp(dark: Boolean, onToggleDark: () -> Unit) {
                 onOpenLyrics = { overlay = Overlay.Lyrics },
             )
             Overlay.Lyrics -> LyricsScreen(onClose = { overlay = Overlay.Player })
-            Overlay.Profile -> ProfileScreen(
+            Overlay.Settings -> SettingsScreen(
                 dark = dark,
                 onToggleDark = onToggleDark,
                 onClose = { overlay = null },
+                onLogin = { overlay = Overlay.Login },
+            )
+            Overlay.Login -> LoginScreen(
+                onClose = { overlay = Overlay.Settings },
+                onLoggedIn = { overlay = Overlay.Settings },
             )
             is Overlay.PlaylistDetail -> PlaylistScreen(
                 id = o.id,

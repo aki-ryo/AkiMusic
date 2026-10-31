@@ -26,6 +26,7 @@ object PlayerHub {
     var index by mutableStateOf(-1); private set
     var position by mutableStateOf(0); private set
     var duration by mutableStateOf(0); private set
+    var volume by mutableStateOf(1f); private set
     var message by mutableStateOf<String?>(null)
 
     fun play(song: Song, list: List<Song> = listOf(song)) {
@@ -57,6 +58,11 @@ object PlayerHub {
         if (i !in queue.indices) i = if (dir > 0) 0 else queue.lastIndex
         index = i
         open(queue[i], autoSkip)
+    }
+
+    fun changeVolume(v: Float) {
+        volume = v.coerceIn(0f, 1f)
+        mp?.setVolume(volume, volume)
     }
 
     fun seekTo(ms: Long) {

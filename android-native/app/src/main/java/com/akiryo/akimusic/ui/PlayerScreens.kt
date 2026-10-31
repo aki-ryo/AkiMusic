@@ -25,6 +25,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.VolumeDown
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Pause
@@ -49,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
@@ -75,6 +80,7 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
     val activeIndex = lyrics.indexOfLast { it.timeMs <= PlayerHub.position }.coerceAtLeast(0)
 
     Box(Modifier.fillMaxSize().background(Color.Black)) {
+        // 背景：压暗封面铺满
         AsyncImage(
             model = song.cover,
             contentDescription = null,
@@ -87,8 +93,8 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Black.copy(alpha = 0.55f),
-                        0.45f to Color.Black.copy(alpha = 0.65f),
-                        1f to Color.Black.copy(alpha = 0.88f),
+                        0.4f to Color.Black.copy(alpha = 0.65f),
+                        1f to Color.Black.copy(alpha = 0.9f),
                     )
                 )
         )
@@ -99,7 +105,7 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
                 .systemBarsPadding()
                 .padding(horizontal = 24.dp)
         ) {
-            // 顶部
+            // 顶部：收起 + 正在播放 + 更多
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -116,21 +122,13 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
                 )
                 Spacer(Modifier.weight(1f))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        "正在播放",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.55f),
-                    )
-                    Text(
-                        "网易云音乐",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.35f),
-                    )
+                    Text("正在播放", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.55f))
+                    Text("网易云音乐", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.35f))
                 }
                 Spacer(Modifier.weight(1f))
                 Icon(
-                    Icons.Filled.QueueMusic,
-                    contentDescription = null,
+                    Icons.Filled.MoreVert,
+                    contentDescription = "更多",
                     tint = Color.White.copy(alpha = 0.8f),
                     modifier = Modifier.size(24.dp),
                 )
@@ -138,29 +136,25 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
 
             Spacer(Modifier.weight(1f))
 
-            // 封面
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
+            // 封面：左偏，约 2/3 宽度
+            Row(Modifier.fillMaxWidth()) {
                 AsyncImage(
                     model = song.cover,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(0.72f)
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(Color.White.copy(alpha = 0.06f)),
+                        .clip(RoundedCornerShape(16.dp))
+                        .shadow(24.dp, RoundedCornerShape(16.dp), ambientColor = Color.Black, spotColor = Color.Black),
                 )
             }
 
-            // 标题
+            // 标题（左对齐，下方）
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 26.dp),
+                    .padding(top = 24.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
@@ -191,8 +185,8 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
                 )
             }
 
-            // 进度
-            Column(Modifier.padding(top = 18.dp)) {
+            // 进度条
+            Column(Modifier.padding(top = 20.dp)) {
                 Slider(
                     value = if (PlayerHub.duration > 0) PlayerHub.position.toFloat() / PlayerHub.duration else 0f,
                     onValueChange = { PlayerHub.seekTo((it * PlayerHub.duration).toLong()) },
@@ -203,40 +197,25 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
                     ),
                 )
                 Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        formatDuration(PlayerHub.position.toLong()),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.5f),
-                    )
+                    Text(formatDuration(PlayerHub.position.toLong()), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
                     Spacer(Modifier.weight(1f))
-                    Text(
-                        formatDuration(PlayerHub.duration.toLong()),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.5f),
-                    )
+                    Text(formatDuration(PlayerHub.duration.toLong()), style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.5f))
                 }
             }
 
-            // 控制
+            // 控制按钮
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 14.dp),
+                    .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(Icons.Filled.Shuffle, contentDescription = null, tint = Color.White.copy(alpha = 0.65f), modifier = Modifier.size(22.dp))
-                Icon(
-                    Icons.Filled.SkipPrevious,
-                    contentDescription = "上一首",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .clickable { PlayerHub.prev() },
-                )
+                Icon(Icons.Filled.SkipPrevious, contentDescription = "上一首", tint = Color.White, modifier = Modifier.size(36.dp).clickable { PlayerHub.prev() })
                 Box(
                     Modifier
-                        .size(64.dp)
+                        .size(62.dp)
                         .clip(CircleShape)
                         .background(Color.White)
                         .clickable { PlayerHub.toggle() },
@@ -249,48 +228,70 @@ fun PlayerScreen(onClose: () -> Unit, onOpenLyrics: () -> Unit) {
                         modifier = Modifier.size(30.dp),
                     )
                 }
-                Icon(
-                    Icons.Filled.SkipNext,
-                    contentDescription = "下一首",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .clickable { PlayerHub.next() },
-                )
+                Icon(Icons.Filled.SkipNext, contentDescription = "下一首", tint = Color.White, modifier = Modifier.size(36.dp).clickable { PlayerHub.next() })
                 Icon(Icons.Filled.Repeat, contentDescription = null, tint = Color.White.copy(alpha = 0.65f), modifier = Modifier.size(22.dp))
             }
 
-            // 歌词预览
+            // 歌词预览（可点击展开全屏歌词）
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 22.dp)
+                    .padding(top = 18.dp)
                     .clickable { onOpenLyrics() },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 val current = lyrics.getOrNull(activeIndex)?.text ?: "纯音乐，请欣赏"
                 val next = lyrics.getOrNull(activeIndex + 1)?.text ?: ""
-                Text(
-                    current,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                Text(current, style = MaterialTheme.typography.titleMedium, color = Color.White, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (next.isNotEmpty()) {
-                    Text(
-                        next,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.45f),
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 6.dp),
-                    )
+                    Text(next, style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.45f), textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 6.dp))
                 }
             }
+
             Spacer(Modifier.weight(1f))
+
+            // 底部音量 + 悬浮胶囊
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Filled.VolumeDown, contentDescription = null, tint = Color.White.copy(alpha = 0.6f), modifier = Modifier.size(18.dp))
+                Slider(
+                    value = PlayerHub.volume,
+                    onValueChange = { PlayerHub.changeVolume(it) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp),
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.White,
+                        activeTrackColor = Color.White,
+                        inactiveTrackColor = Color.White.copy(alpha = 0.24f),
+                    ),
+                )
+                Icon(Icons.Filled.VolumeUp, contentDescription = null, tint = Color.White.copy(alpha = 0.6f), modifier = Modifier.size(18.dp))
+            }
+
+            // 底部悬浮胶囊：歌词 / 队列
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Row(
+                    Modifier
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Color.White.copy(alpha = 0.12f))
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(28.dp),
+                ) {
+                    Icon(Icons.Filled.Lyrics, contentDescription = "歌词", tint = Color.White, modifier = Modifier.size(22.dp).clickable { onOpenLyrics() })
+                    Icon(Icons.Filled.QueueMusic, contentDescription = "队列", tint = Color.White, modifier = Modifier.size(22.dp))
+                }
+            }
         }
     }
 }

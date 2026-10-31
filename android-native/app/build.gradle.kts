@@ -31,8 +31,8 @@ android {
         applicationId = "com.akiryo.akimusic"
         minSdk = 26
         targetSdk = 36
-        versionCode = 3
-        versionName = "0.1.2-beta"
+        versionCode = 4
+        versionName = "0.1.3-beta"
     }
 
     buildTypes {

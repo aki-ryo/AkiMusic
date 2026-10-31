@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Radio
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.Widgets
@@ -37,111 +35,142 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.akiryo.akimusic.data.PlayerHub
 
-/** 五个主标签，顺序与 Apple Music 一致 */
+/** 四个主标签（已删除广播页） */
 enum class Tab(val label: String, val icon: ImageVector) {
     Home("主页", Icons.Filled.Home),
     New("新发现", Icons.Filled.Widgets),
-    Radio("广播", Icons.Filled.Radio),
     Library("资料库", Icons.Filled.LibraryMusic),
     Search("搜索", Icons.Filled.Search),
 }
 
-/** 底部标签栏：贴底不悬浮，高度 49dp + 系统手势区 */
+/**
+ * 底部标签栏：大圆角悬浮胶囊，与屏幕边缘留白，参考 iOS 27 的悬浮底栏。
+ */
 @Composable
 fun BottomBar(selected: Tab, onSelect: (Tab) -> Unit) {
     val palette = LocalPalette.current
-    Column(
+    Box(
         Modifier
             .fillMaxWidth()
-            .barGlass(palette)
+            .padding(horizontal = 20.dp)
+            .navigationBarsPadding()
+            .padding(bottom = 10.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        Box(
+        // 悬浮玻璃胶囊
+        Column(
             Modifier
-                .fillMaxWidth()
-                .height(0.7.dp)
-                .background(palette.separator)
-        )
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(min = 49.dp)
-                .navigationBarsPadding(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Tab.entries.forEach { tab ->
-                val active = tab == selected
-                val tint by animateColorAsState(
-                    if (active) Accent else palette.textSecondary,
-                    label = "tabTint",
-                )
-                val scale by animateDpAsState(
-                    if (active) 24.dp else 23.dp,
-                    spring(dampingRatio = 0.68f, stiffness = 900f),
-                    label = "tabScale",
-                )
-                Column(
-                    Modifier
-                        .weight(1f)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) { onSelect(tab) },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Box(
-                        Modifier
-                            .width(46.dp)
-                            .height(28.dp)
-                            .clip(RoundedCornerShape(9.dp))
-                            .background(if (active) Accent.copy(alpha = 0.10f) else Color.Transparent),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(tab.icon, contentDescription = tab.label, tint = tint, modifier = Modifier.size(scale))
-                    }
-                    Text(
-                        tab.label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = tint,
-                        maxLines = 1,
+                .clip(RoundedCornerShape(26.dp))
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        listOf(
+                            glassTop(palette),
+                            glassBottom(palette),
+                        )
                     )
+                )
+                .shadow(16.dp, RoundedCornerShape(26.dp), ambientColor = Color.Black.copy(alpha = 0.28f), spotColor = Color.Black.copy(alpha = 0.28f))
+                .padding(horizontal = 6.dp, vertical = 7.dp),
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Tab.entries.forEach { tab ->
+                    val active = tab == selected
+                    val tint by animateColorAsState(
+                        if (active) Accent else palette.textSecondary,
+                        label = "tabTint",
+                    )
+                    val scale by animateDpAsState(
+                        if (active) 23.dp else 22.dp,
+                        spring(dampingRatio = 0.68f, stiffness = 900f),
+                        label = "tabScale",
+                    )
+                    Column(
+                        Modifier
+                            .weight(1f)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                            ) { onSelect(tab) },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Box(
+                            Modifier
+                                .width(52.dp)
+                                .height(30.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    if (active) Accent.copy(alpha = 0.14f) else Color.Transparent
+                                ),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                tab.icon,
+                                contentDescription = tab.label,
+                                tint = tint,
+                                modifier = Modifier.size(scale),
+                            )
+                        }
+                        Text(
+                            tab.label,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = tint,
+                            maxLines = 1,
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-/** 迷你播放条：贴着标签栏上方，56dp */
+@Composable
+private fun glassTop(palette: Palette) =
+    if (palette.isDark) Color(0xFF22222A).copy(alpha = 0.92f) else Color.White.copy(alpha = 0.9f)
+
+@Composable
+private fun glassBottom(palette: Palette) =
+    if (palette.isDark) Color(0xFF15151B).copy(alpha = 0.96f) else Color(0xFFF5F5F7).copy(alpha = 0.94f)
+
+/** 迷你播放条：悬浮玻璃条，贴着标签栏上方 */
 @Composable
 fun MiniPlayer(onOpen: () -> Unit) {
     val palette = LocalPalette.current
     val song = PlayerHub.current ?: return
-    Column(
+    Box(
         Modifier
             .fillMaxWidth()
-            .barGlass(palette)
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 8.dp),
     ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(0.7.dp)
-                .background(palette.separator)
-        )
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        listOf(
+                            glassTop(palette),
+                            glassBottom(palette),
+                        )
+                    )
+                )
+                .shadow(12.dp, RoundedCornerShape(18.dp), ambientColor = Color.Black.copy(alpha = 0.22f), spotColor = Color.Black.copy(alpha = 0.22f))
                 .clickable { onOpen() }
-                .padding(horizontal = 14.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Cover(song.cover, Modifier.size(40.dp), radius = 6)
+            Cover(song.cover, Modifier.size(40.dp), radius = 8)
             Column(
                 Modifier
                     .weight(1f)

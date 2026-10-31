@@ -5,7 +5,7 @@
 三个客户端：浏览器版（同一套前端）、**Jetpack Compose 原生 Android**、**SwiftUI 原生 iOS**。
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-0.1.2--beta-fa2d48" />
+  <img alt="version" src="https://img.shields.io/badge/version-0.1.3--beta-fa2d48" />
   <img alt="android" src="https://img.shields.io/badge/Android-8.0%2B-7c7aff" />
   <img alt="ios" src="https://img.shields.io/badge/iOS-16.0%2B-8e8e93" />
   <img alt="use" src="https://img.shields.io/badge/for-learning%20only-lightgrey" />
